@@ -4,6 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SKINS PRO HD</title>
+    
+    <!-- Google tag (gtag.js) - Google Analytics Integrado -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-B339G185FN"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-B339G185FN');
+    </script>
+
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         * {
@@ -118,7 +128,6 @@
             padding: 0 20px;
         }
 
-        /* BOTONES ORIGINALES CON TU ESTILO PROPIO */
         .menu-btn {
             display: block;
             width: 100%;
@@ -222,7 +231,7 @@
 
         .card-img-box {
             width: 100%;
-            height: 210px;
+            height: auto;
             background-color: #000;
             border-bottom: 2px solid #1a1a1a;
         }
@@ -230,7 +239,7 @@
         .card-img-box img {
             width: 100%;
             height: 100%;
-            object-fit: contain;
+            object-fit: contain
         }
 
         .card-body {
@@ -570,7 +579,7 @@
                             <h3>${skin.nombre}</h3>
                             <p>COMPATIBLE CON: ${skin.camion}</p>
                             
-                            <button class="btn-download" id="btnDescarga_${skin.idUnico}" onclick="iniciarContadorCard('${skin.linkDescarga}', ${skin.idUnico})">
+                            <button class="btn-download" id="btnDescarga_${skin.idUnico}" onclick="iniciarContadorCard('${skin.linkDescarga}', ${skin.idUnico}, '${skin.nombre.replace(/'/g, "\\'")}', '${skin.camion.replace(/'/g, "\\'")}')">
                                 DESCARGAR AHORA
                             </button>
 
@@ -591,7 +600,7 @@
             irAVista('vistaCategoria');
         }
 
-        function iniciarContadorCard(urlDescarga, idUnico) {
+        function iniciarContadorCard(urlDescarga, idUnico, nombreSkin, modeloCamion) {
             const boton = document.getElementById(`btnDescarga_${idUnico}`);
             const cajaContador = document.getElementById(`cajaContador_${idUnico}`);
             const cuerpoMensaje = document.getElementById(`cuerpoMensaje_${idUnico}`);
@@ -608,8 +617,33 @@
             }
             cajaContador.style.display = 'block'; 
             
+            // 1. EVENTO ANALYTICS: Clic en iniciar descarga
+            if (typeof gtag === 'function') {
+                gtag('event', 'clic_descarga', {
+                    'item_name': nombreSkin,
+                    'item_category': modeloCamion
+                });
+            }
+            
             const urlAnuncio = 'https://www.effectivecpmnetwork.com/p2y3r3phx?key=0a9217a59faa68685a1f87c8ae5fc3ea';
             const ventanaAnuncio = window.open(urlAnuncio, '_blank'); 
+
+            // CONTROL DE SEGURIDAD: Navegador bloqueó la ventana emergente
+            if (!ventanaAnuncio) {
+                if (typeof gtag === 'function') {
+                    gtag('event', 'anuncio_bloqueado', {
+                        'error_type': 'popup_blocker_active',
+                        'item_name': nombreSkin
+                    });
+                }
+                cuerpoMensaje.innerHTML = `
+                    <span class="material-icons" style="color:#ffcc00; font-size:28px;">popup</span><br>
+                    <span style="color:#ffcc00; font-weight:bold; font-size:14px;">VENTANA EMERGENTE BLOQUEADA</span><br>
+                    <p class="contador-texto" style="margin-bottom:8px;">Para descargar la skin, activa los permisos de ventanas emergentes en tu navegador.</p>
+                    <button class="btn-download" style="padding:10px; font-size:13px; background: linear-gradient(180deg, #ffcc00 0%, #ff9900 100%); color:#000; border-bottom:3px solid #cc7a00;" onclick="reintentarFlujoCard('${urlDescarga}', ${idUnico}, '${nombreSkin.replace(/'/g, "\\'")}', '${modeloCamion.replace(/'/g, "\\'")}')">PERMITIR Y REINTENTAR</button>
+                `;
+                return;
+            }
 
             let tiempoRestante = 6;
 
@@ -621,19 +655,37 @@
                     numeroActualizado.innerText = tiempoRestante;
                 }
 
+                // CONTROL DE SEGURIDAD: Cerró el anuncio antes de tiempo
                 if (ventanaAnuncio && ventanaAnuncio.closed && tiempoRestante > 0) {
                     clearInterval(intervalosActivos[idUnico]);
+                    
+                    if (typeof gtag === 'function') {
+                        gtag('event', 'verificacion_fallida', {
+                            'item_name': nombreSkin,
+                            'tiempo_restante': tiempoRestante
+                        });
+                    }
+
                     cuerpoMensaje.innerHTML = `
                         <span class="material-icons" style="color:#ff3333; font-size:28px;">error_outline</span><br>
                         <span style="color:#ff3333; font-weight:bold; font-size:14px;">¡VERIFICACIÓN FALLIDA!</span><br>
                         <p class="contador-texto" style="margin-bottom:8px;">Debes interactuar con el servidor publicitario por 6 segundos.</p>
-                        <button class="btn-download" style="padding:10px; font-size:13px; background: linear-gradient(180deg, #00ff66 0%, #00b347 100%); color:#000; border-bottom:3px solid #008033;" onclick="reintentarFlujoCard('${urlDescarga}', ${idUnico})">REINTENTAR DESCARGA</button>
+                        <button class="btn-download" style="padding:10px; font-size:13px; background: linear-gradient(180deg, #00ff66 0%, #00b347 100%); color:#000; border-bottom:3px solid #008033;" onclick="reintentarFlujoCard('${urlDescarga}', ${idUnico}, '${nombreSkin.replace(/'/g, "\\'")}', '${modeloCamion.replace(/'/g, "\\'")}')">REINTENTAR DESCARGA</button>
                     `;
                     return;
                 }
 
+                // ÉXITO: Tiempo completado
                 if (tiempoRestante <= 0) {
                     clearInterval(intervalosActivos[idUnico]);
+                    
+                    if (typeof gtag === 'function') {
+                        gtag('event', 'descarga_completada', {
+                            'item_name': nombreSkin,
+                            'item_category': modeloCamion
+                        });
+                    }
+
                     document.getElementById('iframeDescargaOculto').src = urlDescarga;
                     cuerpoMensaje.innerHTML = `
                         <span class="material-icons" style="color:#00ff00; font-size:28px;">check_circle</span><br>
@@ -644,11 +696,11 @@
             }, 1000);
         }
 
-        function reintentarFlujoCard(urlDescarga, idUnico) {
+        function reintentarFlujoCard(urlDescarga, idUnico, nombreSkin, modeloCamion) {
             const cajaContador = document.getElementById(`cajaContador_${idUnico}`);
             cajaContador.style.display = 'none';
             setTimeout(() => {
-                iniciarContadorCard(urlDescarga, idUnico);
+                iniciarContadorCard(urlDescarga, idUnico, nombreSkin, modeloCamion);
             }, 150);
         }
     </script>
