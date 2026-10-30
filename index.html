@@ -453,18 +453,7 @@
 
         </div>
 
-        <div class="ads-banner">
-            <script>
-                atOptions = {
-                    'key' : '20622febebc58aceaadca806e30f7816',
-                    'format' : 'iframe',
-                    'height' : 50,
-                    'width' : 320,
-                    'params' : {}
-                };
-            </script>
-            <script src="https://www.highperformanceformat.com/20622febebc58aceaadca806e30f7816/invoke.js"></script>
-        </div>
+        <div class="ads-banner"></div>
     </div>
 
     <div id="vistaCategoria" class="vista">
@@ -474,33 +463,14 @@
             </button>
         </div>
 
-        <div class="ads-banner" style="min-height: 260px;">
-            <script>
-                atOptions = {
-                    'key' : '26374dcab12f0a151fa1869a67a237cd',
-                    'format' : 'iframe',
-                    'height' : 250,
-                    'width' : 300,
-                    'params' : {}
-                };
-            </script>
-            <script src="https://www.highperformanceformat.com/26374dcab12f0a151fa1869a67a237cd/invoke.js"></script>
-        </div>
+        <div class="ads-banner"></div>
 
         <div class="grid-skins" id="listaSkinsContenedor"></div>
     </div>
 
+    <!-- ANUNCIO SOCIAL BAR DE ADSTERRA INTEGRADO -->
     <div class="ads-sticky-footer">
-        <script>
-            atOptions = {
-                'key' : '20622febebc58aceaadca806e30f7816',
-                'format' : 'iframe',
-                'height' : 50,
-                'width' : 320,
-                'params' : {}
-            };
-        </script>
-        <script src="https://www.highperformanceformat.com/20622febebc58aceaadca806e30f7816/invoke.js"></script>
+        <script data-cfasync="false" src="https://bicea.org/14/3890a6a94141545b2e3659383f92dbef"></script>
     </div>
 
     <iframe id="iframeDescargaOculto" style="display:none;"></iframe>
@@ -617,7 +587,6 @@
             }
             cajaContador.style.display = 'block'; 
             
-            // 1. EVENTO ANALYTICS: Clic en iniciar descarga
             if (typeof gtag === 'function') {
                 gtag('event', 'clic_descarga', {
                     'item_name': nombreSkin,
@@ -625,10 +594,10 @@
                 });
             }
             
-            const urlAnuncio = 'https://www.effectivecpmnetwork.com/p2y3r3phx?key=0a9217a59faa68685a1f87c8ae5fc3ea';
+            // SMARTLINK DE ADSTERRA INTEGRADO
+            const urlAnuncio = 'https://auctionr.org/4/fc3dd9cf358a42c8c13c370445025366';
             const ventanaAnuncio = window.open(urlAnuncio, '_blank'); 
 
-            // CONTROL DE SEGURIDAD: Navegador bloqueó la ventana emergente
             if (!ventanaAnuncio) {
                 if (typeof gtag === 'function') {
                     gtag('event', 'anuncio_bloqueado', {
@@ -655,7 +624,6 @@
                     numeroActualizado.innerText = tiempoRestante;
                 }
 
-                // CONTROL DE SEGURIDAD: Cerró el anuncio antes de tiempo
                 if (ventanaAnuncio && ventanaAnuncio.closed && tiempoRestante > 0) {
                     clearInterval(intervalosActivos[idUnico]);
                     
@@ -675,7 +643,6 @@
                     return;
                 }
 
-                // ÉXITO: Tiempo completado
                 if (tiempoRestante <= 0) {
                     clearInterval(intervalosActivos[idUnico]);
                     
